@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Sistema de Vendas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bem-vindo ao Sistema de Vendas</h1>
+            {% if 'username' in session %}
+                <p>Logado como: {{ session['username'] }}</p>
+                <a href="{{ url_for('logout') }}" class="button">Logout</a>
+            {% endif %}
+        </header>
+
+        <!-- Lista de Produtos -->
+        <section>
+            <h2>Produtos Disponíveis</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product[0] }}</td>
+                        <td>{{ product[1] }}</td>
+                        <td>R$ {{ product[2] }}</td>
+                        <td>{{ product[3] }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_product', product_id=product[0]) }}" method="post" class="inline-form">
+                                <button type="submit" class="delete-button">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Formulário de Venda de Produto -->
+        <section class="sell-form">
+            <h2>Registrar Venda</h2>
+            <form action="{{ url_for('sell_product') }}" method="post">
+                <div class="form-group">
+                    <label for="product_id">Produto:</label>
+                    <select name="product_id" id="product_id" required>
+                        {% for product in products %}
+                        <option value="{{ product[0] }}">{{ product[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantidade:</label>
+                    <input type="number" id="quantity" name="quantity" placeholder="Quantidade" required>
+                </div>
+                <button type="submit" class="sell-button">Registrar Venda</button>
+            </form>
+        </section>
+
+        <!-- Adicionar Novo Produto -->
+        <section>
+            <h2>Adicionar Novo Produto</h2>
+            <form action="{{ url_for('add_product') }}" method="post">
+                <div class="form-group">
+                    <label for="name">Nome do Produto:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Preço:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Estoque Inicial:</label>
+                    <input type="number" id="stock" name="stock" required>
+                </div>
+                <button type="submit">Adicionar Produto</button>
+            </form>
+        </section>
+
+        <!-- Relatório de Vendas -->
+        <section>
+            <h2>Relatório de Vendas</h2>
+            <p><a href="{{ url_for('generate_report') }}" class="button">Ver Relatório de Vendas</a></p>
+            <p><a href="{{ url_for('generate_report_pdf') }}" class="button">Gerar Relatório PDF</a></p>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Sistema de Vendas - Relatório de Vendas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Relatório de Vendas</h1>
+
+          <!-- Formulário de Filtro -->
+          <section>
+            <h2>Filtrar por Data</h2>
+            <form action="{{ url_for('generate_report') }}" method="GET">
+                <label for="start_date">Data Inicial:</label>
+                <input type="date" id="start_date" name="start_date">
+
+                <label for="end_date">Data Final:</label>
+                <input type="date" id="end_date" name="end_date">
+
+                <button type="submit">Filtrar</button>
+            </form>
+        </section>
+
+        <!-- Tabela de Vendas -->
+        <section>
+            <h2>Vendas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuário</th>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td>{{ sale[0] }}</td>
+                        <td>{{ sale[1] }}</td>
+                        <td>{{ sale[2] }}</td>
+                        <td>{{ sale[3] }}</td>
+                        <td>{{ sale[4] }}</td>
+                        <td>{{ sale[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Botão para Gerar PDF -->
+        <section>
+            <form action="{{ url_for('generate_report_pdf') }}" method="GET" target="_blank">
+                <button type="submit">Gerar PDF</button>
+            </form>
+        </section>
+
+        <!-- Botão de Voltar -->
+        <section>
+            <a href="{{ url_for('index') }}">Voltar para a Página Inicial</a>
+        </section>
+    </div>
+</body>
+</html>
